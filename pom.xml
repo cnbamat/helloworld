@@ -16,8 +16,8 @@
 
 	<properties>
 		<docker.image.prefix>ads4astage.azurecr.io</docker.image.prefix>
-		<jib-maven-plugin.version>2.2.0</jib-maven-plugin.version>
 		<java.version>11</java.version>
+		<dockerfile.maven.version>1.4.13</dockerfile.maven.version>
 	</properties>
 
 	<dependencies>
@@ -41,20 +41,38 @@
 			</plugin>
 
 			<plugin>
-				<artifactId>jib-maven-plugin</artifactId>
-				<groupId>com.google.cloud.tools</groupId>
-				<version>${jib-maven-plugin.version}</version>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>${dockerfile.maven.version}</version>
+				<executions>
+					<execution>
+						<id>default</id>
+						<goals>
+							<goal>build</goal>
+							<goal>push</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
-					<from>
-						<image>mcr.microsoft.com/java/11u9-zulu-ubuntu-18.04</image>
-					</from>
-					<to>
-						<image>${docker.image.prefix}/${project.artifactId}</image>
-					</to>
+					<useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+					<repository>${docker.image.prefix}/${project.artifactId}</repository>
+					<buildArgs>
+						<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+					</buildArgs>
 				</configuration>
 			</plugin>
 
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>localdm</id>
+			<name>Local Repository</name>
+			<url>file:///~/.m2</url>
+			<layout>default</layout>
+		</repository>
+	</distributionManagement>
 
 </project>
