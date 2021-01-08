@@ -54,7 +54,7 @@ spec:
         spec:
           containers:
             - name: hello-docker-k8s-cron
-              image: ghcr.io/palyfight/hellodocker:latest
+              image: ads4astage.azurecr.io/hello-k8s:latest
               imagePullPolicy: IfNotPresent
           restartPolicy: OnFailure
 #          imagePullSecrets: # needed so the pods can reach private ghcr.
