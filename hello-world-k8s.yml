@@ -1,0 +1,61 @@
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: hello-docker-k8s
+#spec:
+#  replicas: 1
+#  selector:
+#    matchLabels:
+#      app: hello-docker-k8s
+#  template:
+#    metadata:
+#      labels:
+#        app: hello-docker-k8s
+#    spec:
+#      nodeSelector:
+#        "beta.kubernetes.io/os": linux
+#      containers:
+#      - name: hello-docker-k8s
+#        image: ghcr.io/palyfight/hellodocker:latest
+#        resources:
+#          requests:
+#            cpu: 100m
+#            memory: 128Mi
+#          limits:
+#            cpu: 250m
+#            memory: 256Mi
+#        ports:
+#        - containerPort: 80
+#      imagePullSecrets: # needed so the pods can reach private ghcr.
+#      - name: regcred
+#
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: hello-docker-k8s
+#spec:
+#  type: LoadBalancer
+#  ports:
+#  - port: 80
+#  selector:
+#    app: hello-docker-k8s
+#
+#---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: hello-docker-k8s-cron
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: hello-docker-k8s-cron
+              image: ghcr.io/palyfight/hellodocker:latest
+              imagePullPolicy: IfNotPresent
+          restartPolicy: OnFailure
+#          imagePullSecrets: # needed so the pods can reach private ghcr.
+#            - name: regcred
