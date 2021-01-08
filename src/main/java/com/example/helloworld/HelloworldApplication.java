@@ -1,4 +1,4 @@
-package com.github.palyfight.hellodocker;
+package com.example.helloworld;
 
 import com.github.lalyos.jfiglet.FigletFont;
 import org.springframework.boot.SpringApplication;
